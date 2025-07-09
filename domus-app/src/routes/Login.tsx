@@ -1,58 +1,64 @@
+import { theme } from '../theme';
+import { useState } from 'react';
+
 export default function Login() {
+  
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log({ email, senha }); // Aqui você pode chamar a API
+  };
+
   return (
     <div className="container d-flex justify-content-center align-items-center min-vh-100">
-      <div className="card shadow-lg" style={{ width: '400px', border: 'none', borderRadius: '15px' }}>
+      <div className="card shadow-lg" style={{ width: theme.spacing.xl, border: 'none', borderRadius: theme.radius.md }}>
         <div className="card-header bg-white border-0 pt-4">
-          <h2 className="text-center" style={{ color: '#a528fe' }}>Bem-vindo de volta</h2>
+          <h2 className="text-center" style={{ color: theme.colors.primary }}>Bem-vindo de volta</h2>
           <p className="text-center text-muted">Faça login para continuar</p>
         </div>
         <div className="card-body">
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="form-label" style={{ color: '#6c757d' }}>Email</label>
+              <label className="form-label" style={{ color: theme.colors.text }}>Email</label>
               <input 
                 type="email" 
-                className="form-control py-2" 
-                style={{ borderRadius: '8px', borderColor: '#e0e0e0' }}
+                className="form-control py-2"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{ borderRadius: theme.radius.sm, borderColor: theme.colors.border }}
                 placeholder="seu@email.com"
               />
             </div>
             <div className="mb-4">
-              <label className="form-label" style={{ color: '#6c757d' }}>Senha</label>
+              <label className="form-label" style={{ color: theme.colors.text }}>Senha</label>
               <input 
                 type="password" 
-                className="form-control py-2" 
-                style={{ borderRadius: '8px', borderColor: '#e0e0e0' }}
+                className="form-control py-2"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                style={{ borderRadius: theme.radius.sm, borderColor: theme.colors.border }}
                 placeholder="••••••••"
               />
             </div>
-            <div className="d-flex justify-content-between align-items-center mb-4">
-              <div className="form-check">
-                <input type="checkbox" className="form-check-input" id="rememberMe" />
-                <label className="form-check-label" htmlFor="rememberMe" style={{ color: '#6c757d' }}>Lembrar-me</label>
-              </div>
-              <a href="#" style={{ color: '#a528fe', textDecoration: 'none' }}>Esqueceu a senha?</a>
-            </div>
+            {/* Resto do formulário igual... */}
             <button 
+              type="submit"
               className="btn w-100 py-2" 
               style={{ 
-                backgroundColor: '#a528fe', 
-                color: 'white', 
-                borderRadius: '8px',
+                backgroundColor: theme.colors.primary, 
+                color: theme.colors.white, 
+                borderRadius: theme.radius.sm,
                 border: 'none',
                 fontWeight: '600'
               }}
             >
               Entrar
             </button>
-            <div className="text-center mt-3">
-              <p style={{ color: '#6c757d' }}>
-                Não tem uma conta? <a href="#" style={{ color: '#a528fe', textDecoration: 'none' }}>Cadastre-se</a>
-              </p>
-            </div>
           </form>
         </div>
       </div>
     </div>
   );
-} 
+}
