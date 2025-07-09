@@ -1,7 +1,8 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-import logo from '../assets/logo.svg';
-import { theme } from '../theme';
+import AuthCard from '../../components/auth/AuthCard'; // <-- novo import
+import logo from '../../assets/logo.svg';
+import { theme } from '../../theme';
 import { useState } from 'react';
 
 export default function Login() {
@@ -13,7 +14,6 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulação de chamada API
     setTimeout(() => {
       console.log({ email, senha });
       setIsLoading(false);
@@ -28,21 +28,10 @@ export default function Login() {
         padding: theme.spacing.lg
       }}
     >
-      <div 
-        className="card border-0 shadow-lg"
-        style={{
-          width: '100%',
-          maxWidth: '30rem',
-          borderRadius: theme.radius.lg,
-          backgroundColor: theme.colors.secondary,
-          borderColor: theme.colors.border
-        }}
-      >
+      <AuthCard> {/* <-- aqui usamos o novo componente */}
         <div 
           className="card-header border-bottom-0 text-center pt-4 pb-3"
-          style={{
-            backgroundColor: 'transparent'
-          }}
+          style={{ backgroundColor: 'transparent' }}
         >
           <div className="mb-4">
             <img 
@@ -65,6 +54,7 @@ export default function Login() {
         
         <div className="card-body px-4 pt-0 pb-2">
           <form onSubmit={handleSubmit}>
+            {/* EMAIL */}
             <div className="mb-4">
               <label 
                 htmlFor="email"
@@ -102,6 +92,7 @@ export default function Login() {
               </div>
             </div>
             
+            {/* SENHA */}
             <div className="mb-4">
               <label 
                 htmlFor="senha"
@@ -199,7 +190,7 @@ export default function Login() {
             </a>
           </p>
         </div>
-      </div>
+      </AuthCard>
     </div>
   );
 }
