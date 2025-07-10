@@ -1,24 +1,33 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import AuthCard from '../../components/auth/AuthCard'; // <-- novo import
+import { login } from '../../api/auth';
 import logo from '../../assets/logo.svg';
 import { theme } from '../../theme';
 import { useState } from 'react';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
+  const [username, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
-      console.log({ email, senha });
+    setError("");
+
+    try {
+      await login(username, senha); // chamada real à API
+      
+    } catch (err) {
+      setError("Email ou senha incorretos.");
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
+
 
   return (
     <div 
@@ -61,7 +70,7 @@ export default function Login() {
                 className="form-label mb-2"
                 style={{ color: theme.colors.text }}
               >
-                Email
+                Username
               </label>
               <div className="input-group">
                 <span 
@@ -75,7 +84,7 @@ export default function Login() {
                   <i className="bi bi-envelope"></i>
                 </span>
                 <input 
-                  type="email" 
+                  type="text" 
                   id="email"
                   className="form-control border-start-0 ps-2"
                   style={{
@@ -84,9 +93,9 @@ export default function Login() {
                     color: theme.colors.white,
                     borderRadius: `0 ${theme.radius.sm} ${theme.radius.sm} 0`
                   }}
-                  value={email}
+                  value={username}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="seu@email.com"
+                  placeholder="user.name"
                   required
                 />
               </div>

@@ -7,7 +7,11 @@ export default defineConfig({
   server: {
     allowedHosts: ["cosmus-blindou.me"],
     proxy: {
-      "/api": "http://localhost:8000",
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 })
