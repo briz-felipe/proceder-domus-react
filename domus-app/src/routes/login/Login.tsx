@@ -1,18 +1,32 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
+import { useEffect, useState } from 'react';
+
 import AuthCard from '../../components/auth/AuthCard'; // <-- novo import
+import ModernAlert from '../../components/base/ModernAlert';
+import  ProcederLogo from '../../components/base/ProcederLogo';
 import { login } from '../../api/auth';
-import logo from '../../assets/logo.svg';
 import { theme } from '../../theme';
-import { useState } from 'react';
+import { useLocation } from "react-router-dom";
 
 export default function Login() {
   const [username, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [unauthorized,setIsAuthenticated] =useState<boolean | null>(null);
   const [error, setError] = useState("");
+  const location = useLocation();
+  
+  useEffect(()=>{
+    const reason = location.state?.reason;
+    console.log(reason)
+    if(reason=='unauthorized'){
+      setIsAuthenticated(true);
+    }
+  },[]);
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -42,14 +56,7 @@ export default function Login() {
           className="card-header border-bottom-0 text-center pt-4 pb-3"
           style={{ backgroundColor: 'transparent' }}
         >
-          <div className="mb-4">
-            <img 
-              src={logo} 
-              alt="Logo" 
-              width="100" 
-              style={{ filter: 'drop-shadow(0 0 10px rgba(138, 43, 226, 0.5))' }} 
-            />
-          </div>
+          <ProcederLogo />
           <h2 
             className="mb-2 fw-bold"
             style={{ color: theme.colors.white }}
@@ -60,6 +67,15 @@ export default function Login() {
             Bem-vindo, pode entrar.
           </p>
         </div>
+
+        {unauthorized?
+        <div className='p-4'>
+          <ModernAlert variant="warning" dismissible>
+            Sessão expirada, vamos acessar novamente.
+          </ModernAlert>
+        </div>
+        :""}
+        
         
         <div className="card-body px-4 pt-0 pb-2">
           <form onSubmit={handleSubmit}>
