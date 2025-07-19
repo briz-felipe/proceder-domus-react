@@ -1,190 +1,209 @@
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import  ProcederLogo from '../../components/base/ProcederLogo';
-import { useNavigate } from "react-router-dom";
-import { verify } from "../../api/auth";
+import ProcederLogo from "../../components/base/ProcederLogo";
+import { i } from "framer-motion/client";
 
-export default function Home() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
-  const navigate = useNavigate();
+// Ícone de Menu (Hambúrguer)
+const MenuIcon = () => (
+  <i className="bi bi-three-dots-vertical"></i>
+);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
-        setIsMenuCollapsed(false);
-      }
-    };
+// Ícone de Fechar (X)
+const CloseIcon = () => (
+  <i className="bi bi-x-lg"></i>
+);
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState({
+    imoveis: false,
+    veiculos: false,
+    financeiro: false
+  });
 
-  const toggleMenu = () => {
-    setIsMenuCollapsed(!isMenuCollapsed);
+  const toggleDropdown = (menu) => {
+    setDropdownOpen({
+      ...dropdownOpen,
+      [menu]: !dropdownOpen[menu]
+    });
   };
 
-  const toggleDropdown = (index) => {
-    setActiveDropdown(activeDropdown === index ? null : index);
-  };
-
-  const menuItems = [
-    {
-      title: "Menu",
+  const mainLinks = [
+    { 
+      label: "Menu", 
       icon: "bi-list",
       subItems: [
-        { title: "Perfil", icon: "bi-person", action: () => navigate("/perfil") },
-        { title: "Sair", icon: "bi-box-arrow-right", action: () => { /* logout logic */ } }
+        { href: "#", label: "Perfil", icon: "bi-person" },
+        { href: "#", label: "Sair", icon: "bi-box-arrow-right" }
       ]
     },
-    {
-      title: "Carro",
-      icon: "bi-car-front",
+    { 
+      label: "Imóveis", 
+      icon: "bi-house-door",
       subItems: [
-        { title: "Cadastrar", icon: "bi-plus-circle", action: () => navigate("/carros/cadastrar") },
-        { title: "Multas", icon: "bi-exclamation-triangle", action: () => navigate("/carros/multas") },
-        { title: "Gastos", icon: "bi-cash-stack", action: () => navigate("/carros/gastos") }
+        { href: "#", label: "Cadastrar", icon: "bi-plus-circle" },
+        { href: "#", label: "Documentos", icon: "bi-folder" },
+        { href: "#", label: "Pagamentos", icon: "bi-credit-card" }
       ]
     },
-    {
-      title: "Imóveis",
-      icon: "bi-house",
+    { 
+      label: "Veículos", 
+      icon: "bi-car-front-fill",
       subItems: [
-        { title: "Cadastrar", icon: "bi-plus-circle", action: () => navigate("/imoveis/cadastrar") },
-        { title: "Documentos", icon: "bi-file-earmark-text", action: () => navigate("/imoveis/documentos") },
-        { title: "Gastos", icon: "bi-cash-stack", action: () => navigate("/imoveis/gastos") }
+        { href: "#", label: "Cadastrar", icon: "bi-plus-circle" },
+        { href: "#", label: "Multas", icon: "bi-exclamation-triangle" },
+        { href: "#", label: "Pagamentos", icon: "bi-credit-card" }
       ]
     },
-    {
-      title: "Financeiro",
-      icon: "bi-wallet2",
+    { 
+      label: "Financeiro", 
+      icon: "bi-cash-stack",
       subItems: [
-        { title: "Entrada", icon: "bi-arrow-down-circle", action: () => navigate("/financeiro/entrada") },
-        { title: "Saída", icon: "bi-arrow-up-circle", action: () => navigate("/financeiro/saida") }
+        { href: "#", label: "Entrada", icon: "bi-arrow-down-circle" },
+        { href: "#", label: "Saída", icon: "bi-arrow-up-circle" }
       ]
     }
   ];
 
   return (
-    <div className="d-flex">
-      {/* Botão de menu para mobile */}
-      {isMobile && (
-        <button 
-          onClick={toggleMenu}
-          className="btn btn-primary position-fixed"
-          style={{
-            zIndex: 1050,
-            top: "10px",
-            left: "10px",
-            borderRadius: "50%",
-            width: "40px",
-            height: "40px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}
-        >
-          <i className={`bi ${isMenuCollapsed ? 'bi-list' : 'bi-x'}`}></i>
-        </button>
-      )}
+    <nav className="fixed top-0 left-0 right-0 z-50">
+      <div className="bg-gray-900 bg-opacity-90 backdrop-blur-md shadow-lg border-b border-purple-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo/Marca */}
+            <div className="flex-shrink-0 flex items-center">
+              <a href="#" className="text-white text-2xl font-bold tracking-wider flex items-center">
+                {/* <i className="bi bi-building text-purple-400 mr-2"></i> */}
+                <ProcederLogo className="mr-2"/>
+                <span className="bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+                  Domus
+                </span>
+              </a>
+            </div>
 
-      {/* Sidebar/Navbar */}
-      <div 
-        className={`bg-dark text-white ${isMobile ? 'position-fixed' : 'position-sticky'} 
-          ${isMobile && isMenuCollapsed ? 'd-none' : 'd-block'}`}
-        style={{
-          width: isMenuCollapsed ? "80px" : "280px",
-          height: "100vh",
-          zIndex: 1040,
-          transition: "all 0.3s ease",
-          overflowY: "auto"
-        }}
-      >
-        <div className="p-3">
-          <div className="text-center mb-4 mt-3">
-            <ProcederLogo />
-            {!isMenuCollapsed && <h4>DOMUS</h4>}
-            {!isMenuCollapsed && <hr className="my-2" />}
-            {isMenuCollapsed && (
-              <button 
-                onClick={toggleMenu}
-                className="btn btn-link text-white"
-                title="Expandir menu"
-              >
-                <i className="bi bi-list"></i>
-              </button>
-            )}
-          </div>
-
-          {menuItems.map((item, index) => (
-            <div key={index} className="mb-2">
-              <button
-                className={`btn btn-dark w-100 text-start d-flex align-items-center ${isMenuCollapsed ? 'justify-content-center' : ''}`}
-                onClick={() => {
-                  if (item.subItems) {
-                    toggleDropdown(index);
-                  } else {
-                    item.action && item.action();
-                    if (isMobile) setIsMenuCollapsed(true);
-                  }
-                }}
-                title={isMenuCollapsed ? item.title : ''}
-              >
-                <i className={`bi ${item.icon} ${isMenuCollapsed ? '' : 'me-2'}`}></i>
-                {!isMenuCollapsed && item.title}
-                {!isMenuCollapsed && item.subItems && (
-                  <i className={`bi bi-chevron-${activeDropdown === index ? 'up' : 'down'} ms-auto`}></i>
-                )}
-              </button>
-
-              {!isMenuCollapsed && item.subItems && activeDropdown === index && (
-                <div className="ps-4">
-                  {item.subItems.map((subItem, subIndex) => (
+            {/* Links da Navegação para telas grandes (Desktop) */}
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-center space-x-4">
+                {mainLinks.map((item, index) => (
+                  <div key={index} className="relative group">
                     <button
-                      key={subIndex}
-                      className="btn btn-link text-white w-100 text-start d-flex align-items-center"
-                      onClick={() => {
-                        subItem.action();
-                        if (isMobile) setIsMenuCollapsed(true);
-                      }}
+                      onClick={() => toggleDropdown(item.label.toLowerCase())}
+                      className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium flex items-center transition-colors duration-300 group-hover:bg-purple-900 group-hover:bg-opacity-50"
                     >
-                      <i className={`bi ${subItem.icon} me-2`}></i>
-                      {subItem.title}
+                      <i className={`bi ${item.icon} mr-2 text-purple-400`}></i>
+                      {item.label}
+                      <i className={`bi bi-chevron-down ml-1 text-xs ${dropdownOpen[item.label.toLowerCase()] ? 'transform rotate-180' : ''}`}></i>
                     </button>
-                  ))}
+                    
+                    <div 
+                      className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-purple-700 z-50 ${dropdownOpen[item.label.toLowerCase()] ? 'block' : 'hidden'} group-hover:block`}
+                    >
+                      <div className="py-1">
+                        {item.subItems.map((subItem, subIndex) => (
+                          <a
+                            key={subIndex}
+                            href={subItem.href}
+                            className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-purple-900 hover:text-white"
+                          >
+                            <i className={`bi ${subItem.icon} mr-2 text-purple-300`}></i>
+                            {subItem.label}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Botão do usuário e notificações (Desktop) */}
+            {/* <div className="hidden md:flex items-center space-x-4">
+              <button className="p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <i className="bi bi-bell text-xl"></i>
+              </button>
+              <div className="relative">
+                <button className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  <img
+                    className="h-8 w-8 rounded-full"
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    alt="User profile"
+                  />
+                </button>
+              </div>
+            </div> */}
+
+            {/* Botão do Menu Mobile (Hamburguer) */}
+            <div className="-mr-2 flex md:hidden">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                type="button"
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500"
+                aria-controls="mobile-menu"
+                aria-expanded="false"
+              >
+                <span className="sr-only">Abrir menu principal</span>
+                {isOpen ? <CloseIcon /> : <MenuIcon />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Menu Mobile (visível quando 'isOpen' é true) */}
+      <div 
+        className={`${isOpen ? 'block' : 'hidden'} md:hidden transition-all duration-300 ease-in-out`} 
+        id="mobile-menu"
+      >
+        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-800 bg-opacity-95 border-t border-purple-900">
+          {mainLinks.map((item, index) => (
+            <div key={index}>
+              <button
+                onClick={() => toggleDropdown(item.label.toLowerCase())}
+                className="w-full flex justify-between items-center text-gray-300 hover:bg-purple-900 hover:text-white px-3 py-2 rounded-md text-base font-medium"
+              >
+                <div className="flex items-center">
+                  <i className={`bi ${item.icon} mr-2 text-purple-400`}></i>
+                  {item.label}
                 </div>
-              )}
+                <i className={`bi bi-chevron-down text-xs ${dropdownOpen[item.label.toLowerCase()] ? 'transform rotate-180' : ''}`}></i>
+              </button>
+              
+              <div className={`${dropdownOpen[item.label.toLowerCase()] ? 'block' : 'hidden'} pl-4`}>
+                {item.subItems.map((subItem, subIndex) => (
+                  <a
+                    key={subIndex}
+                    href={subItem.href}
+                    className="flex items-center text-gray-400 hover:bg-purple-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-2"
+                  >
+                    <i className={`bi ${subItem.icon} mr-2 text-purple-300`}></i>
+                    {subItem.label}
+                  </a>
+                ))}
+              </div>
             </div>
           ))}
-
-          {/* Botão para recolher/expandir o menu (somente desktop) */}
-          {!isMobile && (
-            <button 
-              onClick={toggleMenu}
-              className="btn btn-link text-white w-100 text-start d-flex align-items-center mt-3"
-            >
-              <i className={`bi ${isMenuCollapsed ? 'bi-arrow-right' : 'bi-arrow-left'} ${isMenuCollapsed ? '' : 'me-2'}`}></i>
-              {!isMenuCollapsed && "Recolher menu"}
-            </button>
-          )}
+          
+          {/* Perfil mobile */}
+          {/* <div className="pt-4 pb-2 border-t border-purple-900">
+            <div className="flex items-center px-4">
+              <div className="flex-shrink-0">
+                <img
+                  className="h-10 w-10 rounded-full"
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  alt="User profile"
+                />
+              </div>
+              <div className="ml-3">
+                <div className="text-base font-medium text-white">Usuário</div>
+                <div className="text-sm font-medium text-purple-300">admin@imobiliaria.com</div>
+              </div>
+              <button className="ml-auto p-1 rounded-full text-gray-400 hover:text-white focus:outline-none">
+                <i className="bi bi-bell text-xl"></i>
+              </button>
+            </div>
+          </div> */}
         </div>
       </div>
-
-      {/* Conteúdo principal */}
-      <div 
-        className="flex-grow-1 p-3"
-        style={{
-          marginLeft: isMobile ? "0" : (isMenuCollapsed ? "80px" : "280px"),
-          transition: "margin 0.3s ease"
-        }}
-      >
-        <div className="container mt-5">
-          <h2>Home</h2>
-          <p>Conteúdo principal da sua aplicação aqui.</p>
-        </div>
-      </div>
-    </div>
+    </nav>
   );
 }

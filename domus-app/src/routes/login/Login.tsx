@@ -1,5 +1,3 @@
-import 'bootstrap-icons/font/bootstrap-icons.css';
-
 import { useEffect, useState } from 'react';
 
 import AuthCard from '../../components/auth/AuthCard'; // <-- novo import
@@ -207,7 +205,7 @@ export default function Login() {
           <p style={{ color: theme.colors.textMuted, marginBottom: 0 }}>
             Não tem uma conta?{' '}
             <a 
-              href="#!" 
+              href="/signup" 
               className="text-decoration-none"
               style={{ color: theme.colors.primaryLight }}
             >

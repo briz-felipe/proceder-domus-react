@@ -1,5 +1,7 @@
-import { ReactNode } from "react";
-import logo from '../../assets/logo.svg';
+import React, { useState } from "react";
+
+import logoG from '../../assets/logo-g.svg';
+import logoS from '../../assets/logo-s.svg';
 
 interface ProcederLogoProps {
   width?: number | string;
@@ -9,15 +11,17 @@ interface ProcederLogoProps {
 }
 
 export default function ProcederLogo({
-  width = 100,
+  width = 90,
   className = '',
   shadowColor = 'rgba(138, 43, 226, 0.5)',
-  shadowSize = 10
+  shadowSize = 8
 }: ProcederLogoProps) {
+  const [logoS, setLogoS] = useState(false);
+
   return (
-    <div className={`mb-4 ${className}`}>
+    <div className={`d-flex justify-content-center ${className}`}>
       <img 
-        src={logo} 
+        src={logoG} 
         alt="Logo da Proceder" 
         width={width}
         style={{ 
